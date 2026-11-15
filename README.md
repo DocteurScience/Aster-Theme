@@ -18,6 +18,8 @@ Aster is a fork of [Orchis-theme](https://github.com/vinceliuice/Orchis-theme) b
   - `gtk2-engine-murrine` on openSUSE
   - `gtk2-engines-murrine` on Debian, Ubuntu, etc.
 - `sassc` — build dependency
+- An SVG renderer, used to generate the GTK3/GTK4 PNG assets at install time (they are no longer stored in the repository):
+  - `librsvg` (`rsvg-convert`; package `librsvg2-bin` on Debian/Ubuntu, `librsvg2-tools` on Fedora) together with `perl`, **or** `resvg` **or** `inkscape`
 
 ## Installation
 

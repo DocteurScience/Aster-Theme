@@ -115,6 +115,8 @@ install() {
     cp -rf "$SRC_DIR/gtk-2.0/assets-folder/assets-default-radio${ELSE_DARK:-}$ctype"/*.png   "$THEME_DIR/gtk-2.0/assets"
   fi
 
+  ensure_gtk_assets "$theme" "$ctype"
+
   mkdir -p                                                                                   "$THEME_DIR/gtk-3.0"
   cp -r "$SRC_DIR/gtk/assets$theme$ctype"                                                    "$THEME_DIR/gtk-3.0/assets"
   cp -r "$SRC_DIR/gtk/scalable"                                                              "$THEME_DIR/gtk-3.0/assets"
@@ -297,6 +299,30 @@ xfwm_button() {
   sed -i "s/#fdbe04/${button_min}/g"                                            "${THEME_DIR}-xhdpi/xfwm4/hide-pressed.svg"
 }
 
+# GTK3/GTK4 PNG assets are not versioned: they are rendered on demand from
+# src/gtk/assets.svg (one source, recolored per accent/palette) and cached in src/gtk/assets*/
+check_assets_renderer() {
+  if ! has_command rsvg-convert && ! has_command rendersvg && ! has_command inkscape; then
+    echo "ERROR: a SVG renderer is needed to generate the GTK assets."
+    echo "Install 'rsvg-convert' (librsvg2-bin / librsvg2-tools / librsvg), 'resvg' or 'inkscape'."
+    exit 1
+  fi
+  if has_command rsvg-convert && ! has_command perl; then
+    echo "ERROR: 'perl' is needed to generate the GTK assets with rsvg-convert."
+    exit 1
+  fi
+}
+
+ensure_gtk_assets() {
+  local theme="$1" ctype="$2"
+
+  if [[ ! -d "$SRC_DIR/gtk/assets$theme$ctype" ]] || [[ -n "$(find "$SRC_DIR/gtk/assets$theme$ctype" -maxdepth 0 -empty)" ]]; then
+    echo "Generating GTK assets$theme$ctype ..."
+    ONLY_THEME="$theme" ONLY_TYPE="$ctype" "$SRC_DIR/gtk/render-assets.sh" > /dev/null \
+      || { echo "ERROR: failed to generate the GTK assets."; exit 1; }
+  fi
+}
+
 #  Install needed packages
 install_package() {
   if [ ! "$(which sassc 2> /dev/null)" ]; then
@@ -452,7 +478,7 @@ install_theme_color() {
 }
 
 theme_tweaks() {
-  install_package; tweaks_temp
+  install_package; check_assets_renderer; tweaks_temp
 
   if [[ "$panel" == "compact" ]] ; then
     install_compact_panel
