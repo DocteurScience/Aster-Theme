@@ -51,14 +51,15 @@
   }
 
   @if $t == hover {
-    background-color: $overlay-hover;
+    background-color: $entry;
+    background-image: image($overlay-hover);
     color: if($fc == $primary, $text, $fc);
     outline: 2px solid $overlay-hover;
     outline-offset: -2px;
   }
 
   @if $t == focus {
-    background-color: $overlay-focus;
+    background-color: $entry;
     color: if($fc == $primary, $text, $fc);
     outline: 2px solid if($fc == $primary, $track, $fc);
     outline-offset: -2px;
@@ -100,11 +101,14 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 1000% 1000%;
-    color: $text;
+    color: if($button-text, $button-text, $text);
   }
 
+  // Material 3 state layers sit on top of the container colour instead of
+  // replacing it, so the tonal fill stays visible on hover.
   @if $t == hover {
-    background-color: $overlay-hover;
+    background-color: $button;
+    background-image: image($overlay-hover);
   }
 
   @if $t == focus {
@@ -117,14 +121,16 @@
                 background-image 0ms,
                 border 0ms;
     animation: ripple $ripple-fade-in-duration $ease-out forwards;
-    background-color: $overlay-hover;
+    background-color: $button;
     background-image: radial-gradient(circle, $overlay-active 10%, transparent 0%);
     background-size: 100% 100%;
   }
 
+  // M3 disabled: container 12 % of on-surface, content 38 %
   @if $t == disabled {
     box-shadow: none;
-    background-color: $button;
+    background-color: color-mix(in srgb, $text 12%, transparent);
+    background-image: none;
     color: $text-disabled;
     filter: none;
     opacity: 1;

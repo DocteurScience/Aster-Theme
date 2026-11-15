@@ -124,7 +124,6 @@
 
 $primary:                               theme($theme);
 $primary-fixed:                         theme($theme);
-$card:                                  if($colorscheme == 'default', map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-lowest', 'surface-container')), $base);
 $drop_target_color:                     $orange-dark;
 $background:                            if($variant == 'light', background(c), background(e));
 $surface:                               if($variant == 'light', background(a), background(h));
@@ -147,6 +146,8 @@ $base-alt:                              if($variant == 'light', background(b), b
   $base:                                map-get($m3, 'surface-container-lowest');
   $base-alt:                            map-get($m3, if($variant == 'light', 'surface-container-low', 'surface-container'));
 }
+
+$card:                                  if($colorscheme == 'default', map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-lowest', 'surface-container')), $base);
 
 $tooltip:                               if($variant == 'dark', rgba(darken(background(e), 3%), 0.9), rgba(darken(background(h), 3%), 0.9));
 $osd:                                   background(e);
@@ -173,6 +174,14 @@ $panel:                                 if($opacity == 'default', rgba($panel-so
 $shell:                                 if($topbar == 'dark', rgba(black, 0.65), background(c)); // for gnome-shell
 
 $button:                                gtkalpha(currentColor, 0.05);
+$button-text:                           null;
+@if $colorscheme == 'default' {
+  // Material 3 "filled tonal" is the default button: secondary-container fill
+  $button:                              map-get(if($variant == 'light', $m3-light, $m3-dark), 'secondary-container');
+  $button-text:                         map-get(if($variant == 'light', $m3-light, $m3-dark), 'on-secondary-container');
+  // Filled text field container
+  $entry:                               map-get(if($variant == 'light', $m3-light, $m3-dark), 'surface-container-highest');
+}
 $entry:                                 gtkalpha(currentColor, 0.05);
 
 //
@@ -203,9 +212,9 @@ $titlebar-indicator:                    if($topbar == 'dark', currentColor, $pri
 
 $overlay-normal:                        gtkalpha(currentColor, 0.05);
 $overlay-hover:                         gtkalpha(currentColor, 0.08);
-$overlay-focus:                         gtkalpha(currentColor, 0.08);
-$overlay-focus-hover:                   gtkalpha(currentColor, 0.16);
-$overlay-active:                        gtkalpha(currentColor, 0.12);
+$overlay-focus:                         gtkalpha(currentColor, 0.10);
+$overlay-focus-hover:                   gtkalpha(currentColor, 0.18);
+$overlay-active:                        gtkalpha(currentColor, 0.10);
 $overlay-checked:                       gtkalpha(currentColor, 0.10);
 $overlay-selected:                      gtkalpha(currentColor, 0.06);
 

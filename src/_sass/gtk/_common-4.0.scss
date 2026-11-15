@@ -478,8 +478,9 @@ editablelabel > stack > text {
 button {
   min-height: 24px;
   min-width: 24px;
-  padding: ($medium-size - 24px) / 2;
-  border-radius: $corner-radius;
+  // Material 3: 40 px high pill buttons (36 px when compact)
+  padding: ($button-height - 24px) / 2;
+  border-radius: $button-radius;
   font-weight: 500;
   @extend %button-basic;
 
@@ -517,7 +518,7 @@ button {
 
   &.image-button {
     min-width: 24px;
-    padding: ($medium-size - 24px) / 2;
+    padding: ($button-height - 24px) / 2;
 
     @extend %circular-button;
   }
