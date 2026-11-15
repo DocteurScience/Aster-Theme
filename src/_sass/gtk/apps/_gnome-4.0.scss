@@ -211,24 +211,10 @@
     border-radius: $window-radius;
     color: $titlebar-text-secondary;
 
-    @if $colorscheme == 'default' {
-      // Material 3 navigation drawer: docked to the window edge on the
-      // surface-container-low colour, not a floating tinted card.
-      background-color: $base-alt;
-      border-radius: 0;
-      color: $text-secondary;
-    }
-
     > scrolledwindow {
       margin: 0 0 $space-size * 2 $space-size * 2;
       border-radius: $window-radius - $space-size;
       background-color: if($topbar =='dark' and $variant =='light', transparent, rgba(theme($theme), 0.08));
-
-      @if $colorscheme == 'default' {
-        margin: 0;
-        border-radius: 0;
-        background-color: transparent;
-      }
 
       > overshoot, > undershoot {
         &.top {
@@ -253,7 +239,7 @@
           > row.activatable {
             border-radius: 0;
             padding: 0;
-            margin: if($colorscheme == 'default', 0, -8px 0 -8px 0);
+            margin: -8px 0 -8px 0;
             animation: none;
 
             > revealer.sidebar-revealer {
@@ -282,7 +268,7 @@
 
             label {
               color: inherit;
-              min-height: if($colorscheme == 'default', 40px, 54px);
+              min-height: 54px;
               padding-left: $space-size;
             }
 
@@ -354,19 +340,6 @@
                 color: $primary;
 
                 @extend %button-flat-simple;
-              }
-
-              @if $colorscheme == 'default' {
-                // M3 active indicator: secondary-container pill instead of the
-                // Orchis "tab" artwork that merged with the content area.
-                image, label, > revealer > box, button.sidebar-button { color: $nav-active-text; }
-
-                > revealer > box {
-                  background-color: $nav-active;
-                  border-image: none;
-                  border-radius: $circular-radius;
-                  margin: 0 $space-size * 2 0 $space-size;
-                }
               }
             }
 
