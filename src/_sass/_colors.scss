@@ -20,15 +20,31 @@
   @return unquote("@#{$c}");
 }
 
+// Relative luminance (WCAG 2.x). libsass has no pow(), so the sRGB transfer
+// curve is approximated by x^2 * (0.7 + 0.3x), within 0.004 of the real curve
+// over [0.2, 1] (enough to decide between black and white text).
+@function srgb-linear($channel) {
+  $x: $channel / 255;
+  @return $x * $x * (0.7 + 0.3 * $x);
+}
+
+@function relative-luminance($color) {
+  @return 0.2126 * srgb-linear(red($color)) + 0.7152 * srgb-linear(green($color)) + 0.0722 * srgb-linear(blue($color));
+}
+
 @function on($color, $state: 'primary') {
   // Allow 'light' or 'dark' to $color
   @if ($color == 'light') { $color: white; }
   @if ($color == 'dark') { $color: black; }
 
-  // Calculate color brightness according to https://www.w3.org/TR/AERT/#color-contrast
-  $brightness: (red($color) * 299 + green($color) * 587 + blue($color) * 114) / 1000;
+  // Pick the text color with the best WCAG contrast on $color. Pure black and
+  // white cross over at a luminance of 0.179, but the dark text is black at 87%
+  // opacity (effectively a dark grey), which moves the crossover to ~0.205.
+  // The AERT brightness used before left mid-tone fills (e.g. #3281ea) at
+  // 3.8:1 with white text.
+  $luminance: relative-luminance($color);
 
-  @if ($brightness >= 156) {
+  @if ($luminance >= 0.205) {
     @if ($state == 'primary') { @return rgba(black, 0.87); }
     @if ($state == 'secondary') { @return rgba(black, 0.6); }
     @if ($state == 'disabled') { @return rgba(black, 0.38); }
