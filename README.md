@@ -1,8 +1,10 @@
-# Orchis theme
+# Aster theme
 
-Orchis is a [Material Design](https://material.io) theme for GNOME/GTK based desktop environments.
+Aster is a [Material Design](https://material.io) theme for GNOME/GTK based desktop environments.
 
-Based on nana-4 -- [materia-theme](https://github.com/nana-4/materia-theme)
+## Credits and license
+
+Aster is a fork of [Orchis-theme](https://github.com/vinceliuice/Orchis-theme) by vinceliuice, itself based on [materia-theme](https://github.com/nana-4/materia-theme) by nana-4. It is distributed under the GNU GPL v3 (see `COPYING`).
 
 ![screenshot](images/screenshot.png?raw=true)
 
@@ -16,12 +18,6 @@ Based on nana-4 -- [materia-theme](https://github.com/nana-4/materia-theme)
   - `gtk2-engine-murrine` on openSUSE
   - `gtk2-engines-murrine` on Debian, Ubuntu, etc.
 - `sassc` — build dependency
-
-## Donate
-
-If you like this project, consider supporting it with a coffee:
-
-<span class="paypal"><a href="https://www.paypal.me/vinceliuice" title="Donate to this project using Paypal"><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="PayPal donate button" /></a></span>
 
 ## Installation
 
@@ -39,7 +35,7 @@ Run the following commands in the terminal:
 ```
 OPTIONS:
   -d, --dest DIR          Specify destination directory (Default: $HOME/.themes)
-  -n, --name NAME         Specify theme name (Default: Orchis)
+  -n, --name NAME         Specify theme name (Default: Aster)
 
   -t, --theme VARIANT     Specify theme color variant(s) [default|purple|pink|red|orange|yellow|green|teal|grey|all] (Default: blue)
   -c, --color VARIANT     Specify color variant(s) [standard|light|dark] (Default: All variants)s)
@@ -49,7 +45,7 @@ OPTIONS:
                           [default|apple|simple|gnome|ubuntu|arch|manjaro|fedora|debian|void|opensuse|popos|mxlinux|zorin|endeavouros|tux|nixos|gentoo|budgie|solus|kali]
                           (Default: ChromeOS style)
 
-  -l, --libadwaita        Link installed Orchis gtk-4.0 theme to config folder for all libadwaita app use Orchis theme
+  -l, --libadwaita        Link installed Aster gtk-4.0 theme to config folder for all libadwaita app use Aster theme
   -f, --fixed             Fixed accent(blue) color for gnome-shell >= 47 libadwaita theme
 
   --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|(nord/dracula)] (Options can mix)
@@ -86,7 +82,7 @@ OPTIONS:
 
 > For more information, run: `./install.sh -h`
 
-## Tweaks for Orchis
+## Tweaks for Aster
 
 ![tweaks-view](images/tweaks-view.png?raw=true)
 

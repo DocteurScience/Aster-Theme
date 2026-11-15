@@ -1,5 +1,5 @@
 
-## Firefox Orchis theme
+## Firefox Aster theme
 
 <p align="center">A flat theme for Firefox 60+</p>
 
