@@ -194,7 +194,7 @@ $dark_5: #000000;
 @define-color headerbar_shade_color #{$border};
 
 // Cards, boxed lists
-@define-color card_bg_color #{$base};
+@define-color card_bg_color #{$card};
 @define-color card_fg_color #{$text};
 @define-color card_shade_color #{$border};
 
