@@ -195,6 +195,13 @@ $warning:                               if($variant == 'light', $yellow-dark, $y
 $error:                                 if($variant == 'light', $red-dark, $red-light);
 $success:                               if($variant == 'light', $sea-dark, $sea-light);
 
+// Status colours used as *text* (labels, entry text): the fill colours above
+// are too light on light surfaces (e.g. amber at 2:1), so light themes use
+// darker inks that stay above 4.5:1 on window, view and field backgrounds.
+$warning-ink:                           if($variant == 'light', #7A5200, $warning);
+$error-ink:                             if($variant == 'light', #BA1A1A, $error);
+$success-ink:                           if($variant == 'light', #006D3B, $success);
+
 $suggested:                             $primary;
 $destructive:                           $error;
 
@@ -217,6 +224,15 @@ $overlay-focus-hover:                   gtkalpha(currentColor, 0.18);
 $overlay-active:                        gtkalpha(currentColor, 0.10);
 $overlay-checked:                       gtkalpha(currentColor, 0.10);
 $overlay-selected:                      gtkalpha(currentColor, 0.06);
+
+// Navigation (sidebars): M3 active indicator = secondary-container pill
+$nav-active:                            $overlay-checked;
+$nav-active-text:                       $primary;
+@if $colorscheme == 'default' {
+  $nav-active:                          $button;
+  $nav-active-text:                     $button-text;
+}
+
 
 //
 // Text and derivative colors

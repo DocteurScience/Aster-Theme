@@ -157,15 +157,15 @@ label {
 }
 
 .success {
-  color: $success;
+  color: $success-ink;
 }
 
 .warning {
-  color: $warning;
+  color: $warning-ink;
 }
 
 .error {
-  color: $error;
+  color: $error-ink;
 }
 
 window.assistant {
@@ -338,9 +338,9 @@ entry {
   > text > selection { @extend %selected_items_primary; }
 
   // entry error and warning style
-  @each $e_type, $e_color in (error, $error),
-                             (success, $success),
-                             (warning, $warning) {
+  @each $e_type, $e_color in (error, $error-ink),
+                             (success, $success-ink),
+                             (warning, $warning-ink) {
     &.#{$e_type} {
       @include entry(normal, $e_color);
 
@@ -4284,8 +4284,8 @@ separator.sidebar {
   > row {
     min-height: $medium-size;
     padding: 0 $space-size * 1.5;
-    border-radius: 0 $circular-radius $circular-radius 0;
-    margin: 0 $space-size 0 0;
+    border-radius: $nav-radius;
+    margin: 0 $nav-margin 0 $nav-margin-start;
 
     &:hover,
     &:focus-visible:focus-within {
@@ -4293,11 +4293,12 @@ separator.sidebar {
     }
 
     &:selected {
-      background-color: $overlay-checked;
-      color: $primary;
+      background-color: $nav-active;
+      color: $nav-active-text;
 
       &:hover {
-        background-color: $overlay-focus-hover;
+        background-color: $nav-active;
+        background-image: image($overlay-hover);
       }
 
       &:focus-visible:focus-within {
@@ -4328,15 +4329,16 @@ placessidebar {
       min-height: 32px;
       margin: 0 4px 0 0; // Remove unwanted hard-coded vertical margins with -1px
       padding: $space-size / 2;
-      border-radius: 0 $circular_radius $circular_radius 0;
+      border-radius: $nav-radius;
+      margin: 0 $nav-margin 0 $nav-margin-start;
 
       // Using margins/padding directly in the SidebarRow
       // will make the animation of the new bookmark row jump
       > revealer { padding: 0 8px 0 16px; }
 
       &:selected {
-        background-color: $overlay-checked;
-        color: $primary;
+        background-color: $nav-active;
+        color: $nav-active-text;
         font-weight: 500;
       }
 
