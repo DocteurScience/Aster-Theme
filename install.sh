@@ -39,7 +39,7 @@ OPTIONS:
                           ...
                           13. 15px
 
-  --shell                 install gnome-shell version [38|40|42|44|46] (Without this option script will detect shell version and install the right theme)
+  --shell                 install gnome-shell version [38|40|42|44|46|47|48|49|50] (Without this option script will detect shell version and install the right theme)
                           1. 38                 Gnome-shell version <= 38.0
                           2. 40                 Gnome-shell version = 40.0
                           3. 42                 Gnome-shell version = 42.0
@@ -47,6 +47,7 @@ OPTIONS:
                           5. 46                 Gnome-shell version = 46.0
                           6. 47                 Gnome-shell version = 47.0
                           7. 48                 Gnome-shell version = 48.0
+                          8. 49, 50             Untested: uses the 48.0 stylesheet
 
   -r, --remove,
   -u, --uninstall         Uninstall/Remove installed themes
@@ -122,6 +123,12 @@ while [[ "$#" -gt 0 ]]; do
             ;;
           48)
             shell="48"
+            shift
+            ;;
+          49|50)
+            # No dedicated stylesheet yet: reuse the 48.0 one (best effort)
+            shell="48"
+            echo "NOTE: gnome-shell $1 is untested, using the 48.0 stylesheet."
             shift
             ;;
           -*)

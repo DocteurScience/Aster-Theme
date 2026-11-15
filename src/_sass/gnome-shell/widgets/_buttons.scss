@@ -19,9 +19,10 @@
 
 .button {
   min-height: 24px;
-  padding: $space-size $space-size * 2;
+  // Material 3: 40 px pill buttons (36 px compact)
+  padding: ($button-height - 24px) / 2 $space-size * 3;
   border: none;
-  border-radius: $material-radius;
+  border-radius: if($colorscheme == 'default', $button-radius, $material-radius);
   text-align: center;
 
   @include font(button);
