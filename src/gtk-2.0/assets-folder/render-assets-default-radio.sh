@@ -1,13 +1,21 @@
 #! /usr/bin/env bash
 
-RENDER_SVG="$(command -v rendersvg)" || true
-INKSCAPE="$(command -v inkscape)" || true
-OPTIPNG="$(command -v optipng)" || true
+# Usage: ONLY_COLOR='-Dark' ONLY_TYPE='-Nord' ./render-assets-default-radio.sh  (optional filters)
+
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+source ../../render-lib.sh
+
+has_renderer || { echo "ERROR: install rsvg-convert (librsvg), resvg or inkscape" >&2; exit 1; }
 
 INDEX="assets-default-radio.txt"
 
-for color in '' '-Dark'; do
-  for type in '' '-Nord' '-Dracula'; do
+COLORS=('' '-Dark')
+TYPES=('' '-Nord' '-Dracula')
+[[ -v ONLY_COLOR ]] && COLORS=("$ONLY_COLOR")
+[[ -v ONLY_TYPE ]] && TYPES=("$ONLY_TYPE")
+
+for color in "${COLORS[@]}"; do
+  for type in "${TYPES[@]}"; do
 
     ASSETS_DIR="assets-default-radio${color}${type}"
     SRC_FILE="assets-default-radio${color}${type}.svg"
@@ -32,28 +40,13 @@ for color in '' '-Dark'; do
       fi
     fi
 
-    for i in `cat $INDEX`; do
-      if [[ -f "$ASSETS_DIR/$i.png" ]]; then
-        echo "'$ASSETS_DIR/$i.png' exists."
-      else
-        echo "Rendering '$ASSETS_DIR/$i.png'"
-        if [[ -n "${RENDER_SVG}" ]]; then
-          "$RENDER_SVG" --export-id "$i" \
-                        "$SRC_FILE" "$ASSETS_DIR/$i.png"
-        else
-          "$INKSCAPE" --export-id="$i" \
-                      --export-id-only \
-                      --export-filename="$ASSETS_DIR/$i.png" "$SRC_FILE" >/dev/null
-        fi
-        if [[ -n "${OPTIPNG}" ]]; then
-          "$OPTIPNG" -o7 --quiet "$ASSETS_DIR/$i.png"
-        fi
-      fi
-    done
+    while read -r i bx by bw bh; do
+      render_png "$SRC_FILE" "$i" "$ASSETS_DIR/$i.png" 1 "$bx" "$by" "$bw" "$bh" || exit 1
+    done < "assets-default-radio${color}.boxes"
   done
 done
 
-for color in '' '-Dark'; do
+for color in "${COLORS[@]}"; do
   for type in '-Nord' '-Dracula'; do
     ASSETS_FILE="assets-default-radio${color}${type}.svg"
     rm -rf "${ASSETS_FILE}"
