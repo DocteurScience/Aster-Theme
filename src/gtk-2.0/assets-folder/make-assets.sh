@@ -1,8 +1,17 @@
 #! /usr/bin/env bash
 
-for theme in '' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey'; do
-  for color in '' '-Dark'; do
-    for type in '' '-Nord' '-Dracula'; do
+THEMES=('' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey')
+COLORS=('' '-Dark')
+TYPES=('' '-Nord' '-Dracula')
+[[ -v ONLY_THEME ]] && THEMES=("$ONLY_THEME")
+[[ -v ONLY_COLOR ]] && COLORS=("$ONLY_COLOR")
+[[ -v ONLY_TYPE ]] && TYPES=("$ONLY_TYPE")
+
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+
+for theme in "${THEMES[@]}"; do
+  for color in "${COLORS[@]}"; do
+    for type in "${TYPES[@]}"; do
       if [[ "$color" == '' ]]; then
         case "$theme" in
           '')

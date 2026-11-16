@@ -1,68 +1,35 @@
 #! /usr/bin/env bash
+# Render the GTK3/GTK4 PNG assets from assets.svg.
+# Each asset is rendered through its box (assets.boxes: id x y width height, in SVG units).
+# Usage: ./render-assets.sh                                   (all variants)
+#        ONLY_THEME='-Red' ONLY_TYPE='-Nord' ./render-assets.sh   (a single variant)
 
-RENDER_SVG="$(command -v rendersvg)" || true
-INKSCAPE="$(command -v inkscape)" || true
-OPTIPNG="$(command -v optipng)" || true
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+source ../render-lib.sh
 
-INDEX="assets.txt"
+has_renderer || { echo "ERROR: install rsvg-convert (librsvg), resvg or inkscape" >&2; exit 1; }
+
+THEMES=('' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey')
+TYPES=('' '-Nord' '-Dracula')
+[[ -v ONLY_THEME ]] && THEMES=("$ONLY_THEME")
+[[ -v ONLY_TYPE ]] && TYPES=("$ONLY_TYPE")
 
 ./make-assets.sh
 
-for theme in '' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey'; do
-  for type in '' '-Nord' '-Dracula'; do
+for theme in "${THEMES[@]}"; do
+  for type in "${TYPES[@]}"; do
     ASSETS_DIR="assets${theme}${type}"
     SRC_FILE="assets${theme}${type}.svg"
 
-    #[[ -d $ASSETS_DIR ]] && rm -rf $ASSETS_DIR
-    mkdir -p $ASSETS_DIR
+    mkdir -p "$ASSETS_DIR"
 
-    for i in `cat $INDEX`; do
-    echo "Rendering '$ASSETS_DIR/$i.png'"
+    while read -r i bx by bw bh; do
+      render_png "$SRC_FILE" "$i" "$ASSETS_DIR/$i.png" 1 "$bx" "$by" "$bw" "$bh" || exit 1
+      render_png "$SRC_FILE" "$i" "$ASSETS_DIR/$i@2.png" 2 "$bx" "$by" "$bw" "$bh" || exit 1
+    done < assets.boxes
 
-    if [[ -f "$ASSETS_DIR/$i.png" ]]; then
-      echo "'$ASSETS_DIR/$i.png' exists."
-    elif [[ -n "${RENDER_SVG}" ]]; then
-      "$RENDER_SVG" --export-id "$i" \
-                    "$SRC_FILE" "$ASSETS_DIR/$i.png"
-    else
-      "$INKSCAPE" --export-id="$i" \
-                  --export-id-only \
-                  --export-filename="$ASSETS_DIR/$i.png" "$SRC_FILE" >/dev/null
-      if [[ -n "${OPTIPNG}" ]]; then
-        "$OPTIPNG" -o7 --quiet "$ASSETS_DIR/$i.png"
-      fi
-    fi
-
-    echo "Rendering '$ASSETS_DIR/$i@2.png'"
-
-    if [[ -f "$ASSETS_DIR/$i@2.png" ]]; then
-      echo "'$ASSETS_DIR/$i@2.png' exists."
-    elif [[ -n "${RENDER_SVG}" ]]; then
-      "$RENDER_SVG" --export-id "$i" \
-                    --dpi 192 \
-                    --zoom 2 \
-                    "$SRC_FILE" "$ASSETS_DIR/$i@2.png"
-    else
-      "$INKSCAPE" --export-id="$i" \
-                  --export-id-only \
-                  --export-dpi=192 \
-                  --export-filename="$ASSETS_DIR/$i@2.png" "$SRC_FILE" >/dev/null
-      if [[ -n "${OPTIPNG}" ]]; then
-        "$OPTIPNG" -o7 --quiet "$ASSETS_DIR/$i@2.png"
-      fi
-    fi
-
-    done
-  done
-done
-
-for theme in '' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey'; do
-  for type in '' '-Nord' '-Dracula'; do
-    if [[ "${theme}" == '' && "${type}" == '' ]]; then
-      echo "keep assets.svg file..."
-    else
-      ASSETS_FILE="assets${theme}${type}.svg"
-      rm -rf "${ASSETS_FILE}"
+    if [[ "${theme}" != '' || "${type}" != '' ]]; then
+      rm -f "${SRC_FILE}"
     fi
   done
 done

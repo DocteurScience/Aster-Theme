@@ -5,3 +5,10 @@
 src/cinnamon/*.css
 src/gnome-shell/*/*.css
 src/gtk/*/*.css
+
+# GTK3/GTK4 PNG assets are generated at install time (see core.sh: ensure_gtk_assets)
+src/gtk/assets*/
+src/gtk/assets-*.svg
+src/gtk-2.0/assets-folder/assets*/
+src/gnome-shell/theme-*/
+src/cinnamon/theme-*/

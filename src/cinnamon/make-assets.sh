@@ -1,7 +1,16 @@
 #! /usr/bin/env bash
 
-for theme in '' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey'; do
-  for type in '' '-Nord' '-Dracula'; do
+# Usage: ./make-assets.sh                                  (all variants)
+#        ONLY_THEME='-Red' ONLY_TYPE='-Nord' ./make-assets.sh   (one variant)
+THEMES=('' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey')
+TYPES=('' '-Nord' '-Dracula')
+[[ -v ONLY_THEME ]] && THEMES=("$ONLY_THEME")
+[[ -v ONLY_TYPE ]] && TYPES=("$ONLY_TYPE")
+
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+
+for theme in "${THEMES[@]}"; do
+  for type in "${TYPES[@]}"; do
     case "$theme" in
       '')
         theme_color_dark='#1a73e8'

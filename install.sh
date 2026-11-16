@@ -19,7 +19,7 @@ OPTIONS:
                           [default|apple|simple|gnome|ubuntu|arch|manjaro|fedora|debian|void|opensuse|popos|mxlinux|zorin|endeavouros|tux|nixos|gentoo|budgie|solus|kali]
                           (Default: ChromeOS style)
 
-  -l, --libadwaita        Link installed Orchis gtk-4.0 theme to config folder for all libadwaita app use Orchis theme
+  -l, --libadwaita        Link installed Aster gtk-4.0 theme to config folder for all libadwaita app use Aster theme
   -f, --fixed             Fixed accent(blue) color for gnome-shell >= 47 libadwaita theme
 
   --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|(nord/dracula)] (Options can mix)

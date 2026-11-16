@@ -25,7 +25,7 @@ fi
 
 SASSC_OPT="-M -t expanded"
 
-THEME_NAME=Orchis
+THEME_NAME=Aster
 THEME_VARIANTS=('' '-Purple' '-Pink' '-Red' '-Orange' '-Yellow' '-Green' '-Teal' '-Grey')
 COLOR_VARIANTS=('' '-Light' '-Dark')
 SIZE_VARIANTS=('' '-Compact')
@@ -87,6 +87,7 @@ install() {
   cp -r "$SRC_DIR/gnome-shell/pad-osd.css"                                                   "$THEME_DIR/gnome-shell"
   sassc $SASSC_OPT "$SRC_DIR/gnome-shell/shell-$GS_VERSION/gnome-shell${ELSE_DARK:-}$size.scss" "$THEME_DIR/gnome-shell/gnome-shell.css"
 
+  ensure_theme_svgs gnome-shell "$theme" "$ctype"
   cp -r "$SRC_DIR/gnome-shell/common-assets"                                                 "$THEME_DIR/gnome-shell/assets"
   cp -r "$SRC_DIR/gnome-shell/assets${ELSE_DARK:-}/"*.svg                                    "$THEME_DIR/gnome-shell/assets"
 
@@ -106,6 +107,7 @@ install() {
 
   mkdir -p                                                                                   "$THEME_DIR/gtk-2.0"
   cp -r "$SRC_DIR/gtk-2.0/common/"{apps.rc,hacks.rc,main.rc}                                 "$THEME_DIR/gtk-2.0"
+  ensure_gtk2_assets "$theme" "${ELSE_DARK:-}" "$ctype"
   cp -r "$SRC_DIR/gtk-2.0/assets-folder/assets-common${ELSE_DARK:-}$ctype"                   "$THEME_DIR/gtk-2.0/assets"
   cp -r "$SRC_DIR/gtk-2.0/assets-folder/assets$theme${ELSE_DARK:-}$ctype/"*"png"             "$THEME_DIR/gtk-2.0/assets"
 
@@ -114,6 +116,8 @@ install() {
   if [[ "$primary" != "true" ]]; then
     cp -rf "$SRC_DIR/gtk-2.0/assets-folder/assets-default-radio${ELSE_DARK:-}$ctype"/*.png   "$THEME_DIR/gtk-2.0/assets"
   fi
+
+  ensure_gtk_assets "$theme" "$ctype"
 
   mkdir -p                                                                                   "$THEME_DIR/gtk-3.0"
   cp -r "$SRC_DIR/gtk/assets$theme$ctype"                                                    "$THEME_DIR/gtk-3.0/assets"
@@ -160,6 +164,7 @@ install() {
   fi
 
   mkdir -p                                                                                   "$THEME_DIR/cinnamon"
+  ensure_theme_svgs cinnamon "$theme" "$ctype"
   cp -r "$SRC_DIR/cinnamon/common-assets"                                                    "$THEME_DIR/cinnamon/assets"
   cp -r "$SRC_DIR/cinnamon/assets${ELSE_DARK:-}/"*.svg                                       "$THEME_DIR/cinnamon/assets"
   cp -r "$SRC_DIR/cinnamon/theme$theme$ctype/add-workspace-active${ELSE_DARK:-}.svg"         "$THEME_DIR/cinnamon/assets/add-workspace-active.svg"
@@ -295,6 +300,51 @@ xfwm_button() {
   sed -i "s/#fdbe04/${button_min}/g"                                            "${THEME_DIR}-xhdpi/xfwm4/hide-active.svg"
   sed -i "s/#fdbe04/${button_min}/g"                                            "${THEME_DIR}-xhdpi/xfwm4/hide-prelight.svg"
   sed -i "s/#fdbe04/${button_min}/g"                                            "${THEME_DIR}-xhdpi/xfwm4/hide-pressed.svg"
+}
+
+# GTK2/GTK3/GTK4 PNG assets are not versioned: they are rendered on demand from
+# the SVG sources in src/gtk and src/gtk-2.0 (one source, recolored per accent/palette) and cached in src/gtk/assets*/
+check_assets_renderer() {
+  if ! has_command rsvg-convert && ! has_command rendersvg && ! has_command inkscape; then
+    echo "ERROR: a SVG renderer is needed to generate the GTK assets."
+    echo "Install 'rsvg-convert' (librsvg2-bin / librsvg2-tools / librsvg), 'resvg' or 'inkscape'."
+    exit 1
+  fi
+  if has_command rsvg-convert && ! has_command perl; then
+    echo "ERROR: 'perl' is needed to generate the GTK assets with rsvg-convert."
+    exit 1
+  fi
+}
+
+ensure_gtk_assets() {
+  local theme="$1" ctype="$2"
+
+  if [[ ! -d "$SRC_DIR/gtk/assets$theme$ctype" ]] || [[ -n "$(find "$SRC_DIR/gtk/assets$theme$ctype" -maxdepth 0 -empty)" ]]; then
+    echo "Generating GTK assets$theme$ctype ..."
+    ONLY_THEME="$theme" ONLY_TYPE="$ctype" "$SRC_DIR/gtk/render-assets.sh" > /dev/null \
+      || { echo "ERROR: failed to generate the GTK assets."; exit 1; }
+  fi
+}
+
+ensure_gtk2_assets() {
+  local theme="$1" color="$2" ctype="$3"
+  local dir="$SRC_DIR/gtk-2.0/assets-folder"
+
+  if [[ ! -d "$dir/assets$theme$color$ctype" ]] || [[ ! -d "$dir/assets-common$color$ctype" ]] || [[ ! -d "$dir/assets-default-radio$color$ctype" ]]; then
+    echo "Generating GTK2 assets$theme$color$ctype ..."
+    ONLY_THEME="$theme" ONLY_COLOR="$color" ONLY_TYPE="$ctype" "$dir/render-assets.sh" > /dev/null \
+      || { echo "ERROR: failed to generate the GTK2 assets."; exit 1; }
+  fi
+}
+
+# gnome-shell/cinnamon: the recolored theme$theme$ctype directories are derived from "theme"
+ensure_theme_svgs() {
+  local component="$1" theme="$2" ctype="$3"
+
+  if [[ -n "$theme$ctype" && ! -d "$SRC_DIR/$component/theme$theme$ctype" ]]; then
+    ONLY_THEME="$theme" ONLY_TYPE="$ctype" "$SRC_DIR/$component/make-assets.sh" > /dev/null \
+      || { echo "ERROR: failed to generate the $component assets."; exit 1; }
+  fi
 }
 
 #  Install needed packages
@@ -452,7 +502,7 @@ install_theme_color() {
 }
 
 theme_tweaks() {
-  install_package; tweaks_temp
+  install_package; check_assets_renderer; tweaks_temp
 
   if [[ "$panel" == "compact" ]] ; then
     install_compact_panel
