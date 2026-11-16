@@ -50,7 +50,7 @@ OPTIONS:
   -l, --libadwaita        Link installed Aster gtk-4.0 theme to config folder for all libadwaita app use Aster theme
   -f, --fixed             Fixed accent(blue) color for gnome-shell >= 47 libadwaita theme
 
-  --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|(nord/dracula)] (Options can mix)
+  --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|classic|(nord/dracula)] (Options can mix)
                           1. solid              No transparency panel variant
                           2. compact            No floating panel variant
                           3. black              Full black variant
@@ -59,6 +59,8 @@ OPTIONS:
                           6. submenu            Set normal submenus color contrast (dark submenu style on dark version)
                           7. [nord|dracula]     Nord/dracula colorscheme themes (nord and dracula can not mix use!)
                           8. dock               Fix style for 'dash-to-dock' or 'ubuntu-dock' extension
+                          9. classic            Original Orchis look. By default Aster keeps the Orchis colours
+                                                with Material 3 shapes (pill buttons, 52x32 switch, M3 states)
 
   --round                 Change theme round corner border-radius [Input the px value you want] (Suggested: 2px < value < 16px)
                           1. 3px
