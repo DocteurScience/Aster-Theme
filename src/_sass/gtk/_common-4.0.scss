@@ -4379,7 +4379,7 @@ placessidebar {
       margin: 0 4px 0 0; // Remove unwanted hard-coded vertical margins with -1px
       padding: $space-size / 2;
       border-radius: $nav-radius;
-      @if $m3 { margin: 0 $nav-margin 0 $nav-margin-start; }
+      @if $m3 { margin-left: $nav-margin-start; margin-right: $nav-margin; }
 
       // Using margins/padding directly in the SidebarRow
       // will make the animation of the new bookmark row jump

@@ -327,7 +327,11 @@
                 border: none;
                 @if $m3 {
                   // the PNG tab has Orchis colours baked in: draw the tab with CSS instead
-                  border-radius: 28px 0 0 28px;
+                  // same visible height as the Orchis tab (the PNG is 54px tall with a 36px pill)
+                  border-top: 9px solid transparent;
+                  border-bottom: 9px solid transparent;
+                  background-clip: padding-box;
+                  border-radius: 18px 0 0 18px;
                 } @else {
                   border-image-width: 16px 9px 16px 46px;
                   border-image-slice: 16 9 16 46;
@@ -338,6 +342,7 @@
               }
 
               label {
+                @if $m3 { min-height: 36px; } // 36 + the 2x9px transparent border = 54px row
                 margin-left: $space-size + 4px;
               }
 
