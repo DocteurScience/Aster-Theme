@@ -50,8 +50,9 @@ OPTIONS:
   -l, --libadwaita        Link installed Aster gtk-4.0 theme to config folder for all libadwaita app use Aster theme
   -f, --fixed             Fixed accent(blue) color for gnome-shell >= 47 libadwaita theme
 
-  --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|classic|(nord/dracula)] (Options can mix)
+  --tweaks                Specify versions for tweaks [solid|clear|compact|black|primary|macos|submenu|classic|(nord/dracula)] (Options can mix)
                           1. solid              No transparency panel variant
+                             clear              Fully transparent panel, text and icons with a drop shadow
                           2. compact            No floating panel variant
                           3. black              Full black variant
                           4. primary            Change radio icon checked color to primary theme color (Default is Green)

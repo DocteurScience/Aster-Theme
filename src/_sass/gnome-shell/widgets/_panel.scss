@@ -16,6 +16,18 @@ $panel_button_hpadding: ($panel_height - $base-icon-size) / 2;
 
   @if $opacity == 'solid' {
     background-color: $panel-solid;
+  } @else if $opacity == 'clear' {
+    // fully transparent panel: shadows keep text and icons readable on any wallpaper
+    background-color: transparent;
+    .panel-button {
+      color: white;
+      text-shadow: 0 1px 4px 1px rgba(black, 0.85);
+      icon-shadow: 0 1px 4px 1px rgba(black, 0.85);
+      .system-status-icon, StIcon { icon-shadow: 0 1px 4px 1px rgba(black, 0.85); }
+      &:hover, &:focus { background-color: rgba(white, 0.16); }
+      &:active, &:checked { background-color: rgba(white, 0.24); }
+    }
+    .workspace-dot { box-shadow: 0 1px 4px 1px rgba(black, 0.75); }
   } @else {
     background-color: $shell;
   }

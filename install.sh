@@ -25,7 +25,7 @@ OPTIONS:
   -l, --libadwaita        Link installed Aster gtk-4.0 theme to config folder for all libadwaita app use Aster theme
   -f, --fixed             Fixed accent(blue) color for gnome-shell >= 47 libadwaita theme
 
-  --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|classic|(nord/dracula)] (Options can mix)
+  --tweaks                Specify versions for tweaks [solid|clear|compact|black|primary|macos|submenu|classic|(nord/dracula)] (Options can mix)
                           1. solid              No transparency panel variant
                           2. compact            No floating panel variant
                           3. black              Full black variant
@@ -150,6 +150,11 @@ while [[ "$#" -gt 0 ]]; do
       shift
       for variant in $@; do
         case "$variant" in
+          clear)
+            opacity="clear"
+            echo -e "Install fully transparent panel (shadowed text and icons) ..."
+            shift
+            ;;
           solid)
             opacity="solid"
             echo -e "Install solid version ..."

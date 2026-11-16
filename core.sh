@@ -454,6 +454,10 @@ install_compact_panel() {
   sed -i "/\$panel_style:/s/float/compact/" $SRC_DIR/_sass/_tweaks-temp.scss
 }
 
+install_clear() {
+  sed -i "/\$opacity:/s/default/clear/" $SRC_DIR/_sass/_tweaks-temp.scss
+}
+
 install_solid() {
   sed -i "/\$opacity:/s/default/solid/" $SRC_DIR/_sass/_tweaks-temp.scss
 }
@@ -537,6 +541,10 @@ theme_tweaks() {
 
   if [[ "$opacity" == "solid" ]] ; then
     install_solid
+  fi
+
+  if [[ "$opacity" == "clear" ]] ; then
+    install_clear
   fi
 
   if [[ "$blackness" == "true" ]] ; then
