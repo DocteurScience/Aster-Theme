@@ -79,9 +79,13 @@ widgets main borders color on backdrop windows */
 
 /*
 these are pretty self explicative */
-@define-color warning_color #{"" + $warning};
-@define-color error_color #{"" + $error};
-@define-color success_color #{"" + $success};
+// GTK3 only: with libadwaita these text colors are derived from the *_bg_color
+// (see colors-libadwaita) and must not be overridden by the plain fill colors.
+@if not variable-exists(libadwaita) {
+  @define-color warning_color #{"" + $warning};
+  @define-color error_color #{"" + $error};
+  @define-color success_color #{"" + $success};
+}
 // @define-color destructive_color #{"" + $destructive};
 
 /*

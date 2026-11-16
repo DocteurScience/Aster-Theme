@@ -20,15 +20,31 @@
   @return unquote("@#{$c}");
 }
 
+// Relative luminance (WCAG 2.x). libsass has no pow(), so the sRGB transfer
+// curve is approximated by x^2 * (0.7 + 0.3x), within 0.004 of the real curve
+// over [0.2, 1] (enough to decide between black and white text).
+@function srgb-linear($channel) {
+  $x: $channel / 255;
+  @return $x * $x * (0.7 + 0.3 * $x);
+}
+
+@function relative-luminance($color) {
+  @return 0.2126 * srgb-linear(red($color)) + 0.7152 * srgb-linear(green($color)) + 0.0722 * srgb-linear(blue($color));
+}
+
 @function on($color, $state: 'primary') {
   // Allow 'light' or 'dark' to $color
   @if ($color == 'light') { $color: white; }
   @if ($color == 'dark') { $color: black; }
 
-  // Calculate color brightness according to https://www.w3.org/TR/AERT/#color-contrast
-  $brightness: (red($color) * 299 + green($color) * 587 + blue($color) * 114) / 1000;
+  // Pick the text color with the best WCAG contrast on $color. Pure black and
+  // white cross over at a luminance of 0.179, but the dark text is black at 87%
+  // opacity (effectively a dark grey), which moves the crossover to ~0.205.
+  // The AERT brightness used before left mid-tone fills (e.g. #3281ea) at
+  // 3.8:1 with white text.
+  $luminance: relative-luminance($color);
 
-  @if ($brightness >= 156) {
+  @if ($luminance >= 0.205) {
     @if ($state == 'primary') { @return rgba(black, 0.87); }
     @if ($state == 'secondary') { @return rgba(black, 0.6); }
     @if ($state == 'disabled') { @return rgba(black, 0.38); }
@@ -104,8 +120,11 @@
 // Basic colors
 //
 
+@import 'm3-surfaces';
+
 $primary:                               theme($theme);
 $primary-fixed:                         theme($theme);
+$card:                                  if($colorscheme == 'default', map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-lowest', 'surface-container')), $base);
 $drop_target_color:                     $orange-dark;
 $background:                            if($variant == 'light', background(c), background(e));
 $surface:                               if($variant == 'light', background(a), background(h));
@@ -118,6 +137,17 @@ $base-alt:                              if($variant == 'light', background(b), b
   $base-alt:                            if($variant == 'light', background(c), background(f));
 }
 
+// Material 3 surface roles (HCT tonal palette, see tools/m3-palette.py). They
+// replace the flat grey ramp so that window < view/card < headerbar < popover
+// are distinct elevations; the Nord and Dracula palettes keep their own greys.
+@if $colorscheme == 'default' {
+  $m3: if($variant == 'light', $m3-light, $m3-dark);
+  $background:                          map-get($m3, 'surface');
+  $surface:                             map-get($m3, if($variant == 'light', 'surface-container-lowest', 'surface-container-high'));
+  $base:                                map-get($m3, 'surface-container-lowest');
+  $base-alt:                            map-get($m3, if($variant == 'light', 'surface-container-low', 'surface-container'));
+}
+
 $tooltip:                               if($variant == 'dark', rgba(darken(background(e), 3%), 0.9), rgba(darken(background(h), 3%), 0.9));
 $osd:                                   background(e);
 $scrim:                                 background(f);
@@ -125,11 +155,18 @@ $scrim-alt:                             background(g);
 $scrim-inverse:                         rgba(white, 0.1);
 $titlebar:                              if($topbar == 'dark', background(g), background(a));
 $titlebar-backdrop:                     if($topbar == 'dark', background(h), background(b));
+@if $colorscheme == 'default' and ($variant == 'dark' or $topbar != 'dark') {
+  $titlebar:                            map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container', 'surface-container-low'));
+  $titlebar-backdrop:                   map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-low', 'surface'));
+}
 
 $keyboard:                              if($variant == 'light', $grey-050, $grey-800); // for gnome-shell keyboard
 $keyboard-alt:                          if($variant == 'light', $grey-300, $grey-900); // for gnome-shell keyboard
 $system:                                if($blackness == 'true', $grey-850, $grey-750); // for gnome-shell keyboard
 $popover:                               if($variant == 'light', background(a), background(e));
+@if $colorscheme == 'default' {
+  $popover:                             map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-lowest', 'surface-container-high'));
+}
 
 $panel-solid:                           if($topbar == 'dark', background(e), background(c)); // for Unity panel which doesn't allow translucent colors
 $panel:                                 if($opacity == 'default', rgba($panel-solid, 0.65), $panel-solid);
