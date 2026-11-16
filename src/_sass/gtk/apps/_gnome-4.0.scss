@@ -325,14 +325,24 @@
                 color: $primary;
                 background-color: $base;
                 border: none;
-                border-image-width: 16px 9px 16px 46px;
-                border-image-slice: 16 9 16 46;
-                border-image-repeat: stretch;
-                border-image-source: -gtk-scaled(url("assets/row-selected#{$blackness-asset-suffix}#{$theme-asset-suffix}.png"),
-                  url("assets/row-selected#{$blackness-asset-suffix}#{$theme-asset-suffix}@2.png"));
+                @if $m3-tonal {
+                  // the PNG tab has Orchis colours baked in: draw the tab with CSS instead
+                  // same visible height as the Orchis tab (the PNG is 54px tall with a 36px pill)
+                  border-top: 9px solid transparent;
+                  border-bottom: 9px solid transparent;
+                  background-clip: padding-box;
+                  border-radius: 18px 0 0 18px;
+                } @else {
+                  border-image-width: 16px 9px 16px 46px;
+                  border-image-slice: 16 9 16 46;
+                  border-image-repeat: stretch;
+                  border-image-source: -gtk-scaled(url("assets/row-selected#{$blackness-asset-suffix}#{$theme-asset-suffix}.png"),
+                    url("assets/row-selected#{$blackness-asset-suffix}#{$theme-asset-suffix}@2.png"));
+                }
               }
 
               label {
+                @if $m3-tonal { min-height: 36px; } // 36 + the 2x9px transparent border = 54px row
                 margin-left: $space-size + 4px;
               }
 

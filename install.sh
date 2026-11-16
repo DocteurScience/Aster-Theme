@@ -3,6 +3,9 @@
 REPO_DIR="$(dirname "$(readlink -m "${0}")")"
 source "${REPO_DIR}/core.sh"
 
+# Material 3 shapes on Orchis colours are the default; --tweaks classic restores Orchis
+material="true"
+
 usage() {
 cat << EOF
 Usage: $0 [OPTION]...
@@ -22,15 +25,16 @@ OPTIONS:
   -l, --libadwaita        Link installed Aster gtk-4.0 theme to config folder for all libadwaita app use Aster theme
   -f, --fixed             Fixed accent(blue) color for gnome-shell >= 47 libadwaita theme
 
-  --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|(nord/dracula)] (Options can mix)
+  --tweaks                Specify versions for tweaks [solid|clear|compact|black|primary|macos|submenu|classic|(nord/dracula)] (Options can mix)
                           1. solid              No transparency panel variant
                           2. compact            No floating panel variant
                           3. black              Full black variant
                           4. primary            Change radio icon checked color to primary theme color (Default is Green)
                           5. macos              Change window buttons to macOS style
                           6. submenu            Set normal submenus color contrast (dark submenu style on dark version)
-                          7. [nord|dracula]     Nord/dracula colorscheme themes (nord and dracula can not mix use!)
-                          8. dock               Fix style for 'dash-to-dock' or 'ubuntu-dock' extension
+                          7. classic            Original Orchis look (default: Orchis colours, Material 3 shapes)
+                          8. [nord|dracula]     Nord/dracula colorscheme themes (nord and dracula can not mix use!)
+                          9. dock               Fix style for 'dash-to-dock' or 'ubuntu-dock' extension
 
   --round                 Change theme round corner border-radius [Input the px value you want] (Suggested: 2px < value < 16px)
                           1. 3px
@@ -39,7 +43,7 @@ OPTIONS:
                           ...
                           13. 15px
 
-  --shell                 install gnome-shell version [38|40|42|44|46] (Without this option script will detect shell version and install the right theme)
+  --shell                 install gnome-shell version [38|40|42|44|46|47|48|49|50] (Without this option script will detect shell version and install the right theme)
                           1. 38                 Gnome-shell version <= 38.0
                           2. 40                 Gnome-shell version = 40.0
                           3. 42                 Gnome-shell version = 42.0
@@ -47,6 +51,7 @@ OPTIONS:
                           5. 46                 Gnome-shell version = 46.0
                           6. 47                 Gnome-shell version = 47.0
                           7. 48                 Gnome-shell version = 48.0
+                          8. 49, 50             Untested: uses the 48.0 stylesheet
 
   -r, --remove,
   -u, --uninstall         Uninstall/Remove installed themes
@@ -124,6 +129,12 @@ while [[ "$#" -gt 0 ]]; do
             shell="48"
             shift
             ;;
+          49|50)
+            # No dedicated stylesheet yet: reuse the 48.0 one (best effort)
+            shell="48"
+            echo "NOTE: gnome-shell $1 is untested, using the 48.0 stylesheet."
+            shift
+            ;;
           -*)
             break
             ;;
@@ -139,6 +150,11 @@ while [[ "$#" -gt 0 ]]; do
       shift
       for variant in $@; do
         case "$variant" in
+          clear)
+            opacity="clear"
+            echo -e "Install fully transparent panel (shadowed text and icons) ..."
+            shift
+            ;;
           solid)
             opacity="solid"
             echo -e "Install solid version ..."
@@ -167,6 +183,15 @@ while [[ "$#" -gt 0 ]]; do
           submenu)
             submenu="true"
             echo -e "Install with themed sub-menus ..."
+            shift
+            ;;
+          material)
+            material="true" # default since 2026-11; kept for compatibility
+            shift
+            ;;
+          classic)
+            material="false"
+            echo -e "Install the original Orchis look ..."
             shift
             ;;
           nord)

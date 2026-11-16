@@ -157,15 +157,15 @@ label {
 }
 
 .success {
-  color: $success;
+  color: $success-ink;
 }
 
 .warning {
-  color: $warning;
+  color: $warning-ink;
 }
 
 .error {
-  color: $error;
+  color: $error-ink;
 }
 
 window.assistant {
@@ -338,9 +338,9 @@ entry {
   > text > selection { @extend %selected_items_primary; }
 
   // entry error and warning style
-  @each $e_type, $e_color in (error, $error),
-                             (success, $success),
-                             (warning, $warning) {
+  @each $e_type, $e_color in (error, $error-ink),
+                             (success, $success-ink),
+                             (warning, $warning-ink) {
     &.#{$e_type} {
       @include entry(normal, $e_color);
 
@@ -478,8 +478,9 @@ editablelabel > stack > text {
 button {
   min-height: 24px;
   min-width: 24px;
-  padding: ($medium-size - 24px) / 2;
-  border-radius: $corner-radius;
+  // Material 3: 40 px high pill buttons (36 px when compact)
+  padding: ($button-height - 24px) / 2;
+  border-radius: $button-radius;
   font-weight: 500;
   @extend %button-basic;
 
@@ -517,7 +518,7 @@ button {
 
   &.image-button {
     min-width: 24px;
-    padding: ($medium-size - 24px) / 2;
+    padding: ($button-height - 24px) / 2;
 
     @extend %circular-button;
   }
@@ -2497,6 +2498,61 @@ scrollbar {
 /**********
  * Switch *
  **********/
+@if $m3 {
+switch {
+  // Material 3 switch: 52x32 track, 24 px handle on / 16 px handle off
+  transition: all $duration $ease-out;
+  min-width: 52px;
+  min-height: 32px;
+  margin: $space-size / 2 0;
+  padding: 0;
+  border: none;
+  border-radius: $circular-radius;
+  background-color: rgba($text, 0.06);
+  box-shadow: inset 0 0 0 2px $text-secondary;
+  font-size: 0;
+  color: transparent;
+
+  &:checked {
+    background-color: $primary;
+    box-shadow: none;
+  }
+
+  &:disabled { opacity: 0.38; }
+
+  // hide on/off icons for >=3.24.5
+  image {
+    margin: -8px;
+    color: transparent;
+  }
+
+  > slider {
+    transition: all $duration $ease-out;
+    min-width: 16px;
+    min-height: 16px;
+    margin: 8px;
+    border-radius: $circular-radius;
+    outline: none;
+    box-shadow: 0 0 0 8px transparent;
+    border: none;
+    background-color: $text-secondary;
+  }
+
+  &:focus > slider { box-shadow: 0 0 0 8px $overlay-focus; }
+
+  &:hover > slider { box-shadow: 0 0 0 8px $overlay-hover; }
+
+  &:focus:hover > slider { box-shadow: 0 0 0 8px $overlay-focus-hover; }
+
+  &:checked > slider {
+    min-width: 24px;
+    min-height: 24px;
+    margin: 4px;
+    background-color: $primary-text;
+    color: $primary-text;
+  }
+}
+} @else {
 switch {
   transition: all $duration $ease-out;
   margin: $space-size 0;
@@ -2540,7 +2596,7 @@ switch {
     color: $primary;
   }
 }
-
+}
 
 /*************************
  * Check and Radio items *
@@ -4273,8 +4329,8 @@ separator.sidebar {
   > row {
     min-height: $medium-size;
     padding: 0 $space-size * 1.5;
-    border-radius: 0 $circular-radius $circular-radius 0;
-    margin: 0 $space-size 0 0;
+    border-radius: $nav-radius;
+    margin: 0 $nav-margin 0 $nav-margin-start;
 
     &:hover,
     &:focus-visible:focus-within {
@@ -4282,11 +4338,16 @@ separator.sidebar {
     }
 
     &:selected {
-      background-color: $overlay-checked;
-      color: $primary;
+      background-color: $nav-active;
+      color: $nav-active-text;
 
       &:hover {
-        background-color: $overlay-focus-hover;
+        @if $m3 {
+          background-color: $nav-active;
+          background-image: image($overlay-hover);
+        } @else {
+          background-color: $overlay-focus-hover;
+        }
       }
 
       &:focus-visible:focus-within {
@@ -4317,15 +4378,16 @@ placessidebar {
       min-height: 32px;
       margin: 0 4px 0 0; // Remove unwanted hard-coded vertical margins with -1px
       padding: $space-size / 2;
-      border-radius: 0 $circular_radius $circular_radius 0;
+      border-radius: $nav-radius;
+      @if $m3 { margin-left: $nav-margin-start; margin-right: $nav-margin; }
 
       // Using margins/padding directly in the SidebarRow
       // will make the animation of the new bookmark row jump
       > revealer { padding: 0 8px 0 16px; }
 
       &:selected {
-        background-color: $overlay-checked;
-        color: $primary;
+        background-color: $nav-active;
+        color: $nav-active-text;
         font-weight: 500;
       }
 

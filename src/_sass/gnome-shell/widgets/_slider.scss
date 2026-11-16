@@ -26,3 +26,15 @@ $slider_color: if($variant == 'light', $primary, white);
   &:hover { color: lighten($slider_color, 5%); }
   &:active { color: darken($slider_color, 5%); }
 }
+
+// Material 3 slider: 4 px track on a tonal trough, primary-coloured handle (opt-in)
+@if $m3 {
+  .slider {
+    -barlevel-height: 4px;
+    -barlevel-background-color: $track;
+    -slider-handle-radius: 10px;
+    color: $primary;
+    &:hover { color: lighten($primary, 5%); }
+    &:active { color: darken($primary, 5%); }
+  }
+}

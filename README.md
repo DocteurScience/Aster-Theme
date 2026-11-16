@@ -1,118 +1,116 @@
-# Aster theme
+# Aster
 
-Aster is a [Material Design](https://material.io) theme for GNOME/GTK based desktop environments.
+Aster is a GTK and GNOME Shell theme that keeps the colours and identity of
+[Orchis](https://github.com/vinceliuice/Orchis-theme) and brings the shapes,
+states and accessibility rules of [Material Design 3](https://m3.material.io).
 
-## Credits and license
+![Aster light](images/screenshot-light.png?raw=true)
+![Aster dark](images/screenshot-dark.png?raw=true)
 
-Aster is a fork of [Orchis-theme](https://github.com/vinceliuice/Orchis-theme) by vinceliuice, itself based on [materia-theme](https://github.com/nana-4/materia-theme) by nana-4. It is distributed under the GNU GPL v3 (see `COPYING`).
+## What Aster changes
 
-![screenshot](images/screenshot.png?raw=true)
+**Kept from Orchis**
+- Grey surfaces and the blue accent palette (plus the purple, pink, red, orange,
+  yellow, green, teal and grey variants, and the Nord / Dracula colour schemes).
+- The floating, accent-tinted sidebar card whose selected row blends into the content.
+- Floating, translucent top bar.
+
+**From Material 3**
+- 40 px pill buttons, 52×32 switches with a growing handle, filled text fields.
+- M3 state layers: hover 8 %, focus and press 10 %, drag 16 %.
+- Matching switch artwork in GNOME Shell (quick settings, Do Not Disturb), M3 sliders.
+
+**Fixes for recent GTK 4 / libadwaita**
+- The libadwaita colour variables (`--accent-bg-color`, palette, …) are defined
+  correctly, so `var(--x)` and `@x` give the same colour.
+- Accent, success, warning and error text colours are left to libadwaita, which
+  derives readable variants from the background colours.
+- Text contrast checked automatically (`tools/check-contrast.py`): every pair
+  reaches 4.5:1 in light and dark, including the destructive red (#D32F2F).
+
+![Aster default vs classic Orchis look](images/aster-vs-classic.png?raw=true)
+
+Prefer the original Orchis look? Install with `--tweaks classic`.
 
 ## Requirements
 
-- GTK `>=3.20`
+- GTK `>= 3.20` (GTK 4 / libadwaita supported through `-l`, see below)
 - `gnome-themes-extra` (or `gnome-themes-standard`)
-- Murrine engine — The package name depends on the distro.
-  - `gtk-engine-murrine` on Arch Linux
-  - `gtk-murrine-engine` on Fedora
-  - `gtk2-engine-murrine` on openSUSE
-  - `gtk2-engines-murrine` on Debian, Ubuntu, etc.
-- `sassc` — build dependency
-- An SVG renderer, used to generate the GTK3/GTK4 PNG assets at install time (they are no longer stored in the repository):
-  - `librsvg` (`rsvg-convert`; package `librsvg2-bin` on Debian/Ubuntu, `librsvg2-tools` on Fedora) together with `perl`, **or** `resvg` **or** `inkscape`
+- Murrine engine for GTK 2 (`gtk-engine-murrine` on Arch, `gtk-murrine-engine` on Fedora,
+  `gtk2-engine-murrine` on openSUSE, `gtk2-engines-murrine` on Debian/Ubuntu)
+- `sassc` (build)
+- An SVG renderer to generate the PNG assets at install time:
+  `rsvg-convert` (`librsvg2-bin` on Debian/Ubuntu, `librsvg2-tools` on Fedora) with `perl`,
+  or `resvg`, or `inkscape`
 
 ## Installation
 
-### Manual Installation
+```sh
+git clone https://github.com/DocteurScience/aster-theme.git
+cd aster-theme
+./install.sh            # all colour and size variants into ~/.themes
+./install.sh -l         # also link the theme for libadwaita (GTK 4) apps
+```
 
-Run the following commands in the terminal:
+Then select **Aster** in GNOME Tweaks (applications and, with the User Themes
+extension, GNOME Shell).
+
+### Common options
+
+| Option | Effect |
+|---|---|
+| `-t blue\|purple\|…\|all` | Accent colour variant |
+| `-c light\|dark` | Light or dark variant only |
+| `-s compact` | Compact size |
+| `-l` | Link the GTK 4 theme to `~/.config/gtk-4.0` for libadwaita apps |
+| `--tweaks classic` | Original Orchis look (Orchis shapes) |
+| `--tweaks clear` | Fully transparent top bar, text and icons with a drop shadow |
+| `--tweaks solid` | Opaque top bar |
+| `--tweaks compact` | Top bar attached to the screen edge instead of floating |
+| `--tweaks black` | Pure black dark variant |
+| `--tweaks nord` / `dracula` | Nord or Dracula colour scheme |
+| `--round N` | Window corner radius in px |
+| `-r` | Uninstall |
+
+![Default and clear top bar](images/panel-clear.png?raw=true)
+
+Run `./install.sh -h` for the full list.
+
+### libadwaita (GNOME 42 and later)
+
+libadwaita apps do not load GTK themes on their own. `./install.sh -l` links the
+selected Aster `gtk-4.0` folder to `~/.config/gtk-4.0`, which libadwaita reads:
 
 ```sh
-./install.sh
+./install.sh -c dark -l            # dark variant
+./install.sh -c dark -t purple -l  # dark purple variant
 ```
 
-> [!TIP]
-> `./install.sh` allows the following options:
+The theme can then no longer be switched from GNOME Tweaks for these apps; run the
+command again to change variant.
 
-```
-OPTIONS:
-  -d, --dest DIR          Specify destination directory (Default: $HOME/.themes)
-  -n, --name NAME         Specify theme name (Default: Aster)
-
-  -t, --theme VARIANT     Specify theme color variant(s) [default|purple|pink|red|orange|yellow|green|teal|grey|all] (Default: blue)
-  -c, --color VARIANT     Specify color variant(s) [standard|light|dark] (Default: All variants)s)
-  -s, --size VARIANT      Specify size variant [standard|compact] (Default: All variants)
-
-  -i, --icon VARIANT      Specify icon variant(s) for shell panel activities button
-                          [default|apple|simple|gnome|ubuntu|arch|manjaro|fedora|debian|void|opensuse|popos|mxlinux|zorin|endeavouros|tux|nixos|gentoo|budgie|solus|kali]
-                          (Default: ChromeOS style)
-
-  -l, --libadwaita        Link installed Aster gtk-4.0 theme to config folder for all libadwaita app use Aster theme
-  -f, --fixed             Fixed accent(blue) color for gnome-shell >= 47 libadwaita theme
-
-  --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|(nord/dracula)] (Options can mix)
-                          1. solid              No transparency panel variant
-                          2. compact            No floating panel variant
-                          3. black              Full black variant
-                          4. primary            Change radio icon checked color to primary theme color (Default is Green)
-                          5. macos              Change window buttons to macOS style
-                          6. submenu            Set normal submenus color contrast (dark submenu style on dark version)
-                          7. [nord|dracula]     Nord/dracula colorscheme themes (nord and dracula can not mix use!)
-                          8. dock               Fix style for 'dash-to-dock' or 'ubuntu-dock' extension
-
-  --round                 Change theme round corner border-radius [Input the px value you want] (Suggested: 2px < value < 16px)
-                          1. 3px
-                          2. 4px
-                          3. 5px
-                          ...
-                          13. 15px
-
-  --shell                 install gnome-shell version [38|40|42|44|46] (Without this option script will detect shell version and install the right theme)
-                          1. 38                 Gnome-shell version <= 38.0
-                          2. 40                 Gnome-shell version = 40.0
-                          3. 42                 Gnome-shell version = 42.0
-                          4. 44                 Gnome-shell version = 44.0
-                          5. 46                 Gnome-shell version = 46.0
-                          6. 47                 Gnome-shell version = 47.0
-                          7. 48                 Gnome-shell version = 48.0
-
-  -r, --remove,
-  -u, --uninstall         Uninstall/Remove installed themes
-
-  -h, --help              Show help
-```
-
-> For more information, run: `./install.sh -h`
-
-## Tweaks for Aster
-
-![tweaks-view](images/tweaks-view.png?raw=true)
-
-### Fix for libadwaita (Gnome-shell >= 42.0)
-
-![libadwaita](images/libadwaita.png?raw=true)
-
-run: `./install.sh -l` (Default light version will installed)
-
-This fix is just a link from selected Ochis gtk-4.0 theme in `$HOME/.theme` to `$HOME/.config/gtk-4.0/gtk.css`
-so it will not support change theme through `Gnome-tweaks`
-if you want install other theme version for libadwaita you can run like:
+### Flatpak
 
 ```sh
-./install.sh -c dark -l #(Link dark version)
+sudo flatpak override --filesystem=xdg-config/gtk-3.0
+sudo flatpak override --filesystem=xdg-config/gtk-4.0
 ```
 
-```sh
-./install.sh -c dark -t purple -l #(Link dark purple version)
-```
+## Status
 
-and so on ... 
+- Tested on GTK 4.24 / libadwaita 1.10, Nautilus 46 and GNOME Shell 46.
+- GNOME Shell 47 and later: versions 48+ use the 48 stylesheet; not yet verified on a real 48–50 session.
+- GTK 3 apps still use the Orchis styles.
 
-### Fix for Flatpak
+## Development
 
-```sh
-sudo flatpak override --filesystem=xdg-config/gtk-3.0 && sudo flatpak override --filesystem=xdg-config/gtk-4.0
-```
+- Sass sources: `src/_sass` (`_colors.scss`, `_variables.scss`, `gtk/`, `gnome-shell/`).
+- The Material 3 shapes are controlled by `$material` / `$m3` in `src/_sass/_tweaks.scss`.
+- Contrast test: `python3 tools/check-contrast.py <gtk.css> <gtk-dark.css>`.
+- `install.sh` returns 0 even when Sass fails: check its output for `error`.
 
-If you use flatpak apps, you can run this to fix theme issue.
+## Credits and license
 
+Aster is a fork of [Orchis-theme](https://github.com/vinceliuice/Orchis-theme) by
+vinceliuice, itself based on [materia-theme](https://github.com/nana-4/materia-theme)
+by nana-4. Distributed under the GNU GPL v3 (see `COPYING`).

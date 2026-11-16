@@ -42,9 +42,12 @@
   // opacity (effectively a dark grey), which moves the crossover to ~0.205.
   // The AERT brightness used before left mid-tone fills (e.g. #3281ea) at
   // 3.8:1 with white text.
-  $luminance: relative-luminance($color);
+  // Only used with --tweaks material; the default keeps the Orchis behaviour.
+  $dark-text: if($m3,
+    relative-luminance($color) >= 0.205,
+    (red($color) * 299 + green($color) * 587 + blue($color) * 114) / 1000 >= 156);
 
-  @if ($luminance >= 0.205) {
+  @if ($dark-text) {
     @if ($state == 'primary') { @return rgba(black, 0.87); }
     @if ($state == 'secondary') { @return rgba(black, 0.6); }
     @if ($state == 'disabled') { @return rgba(black, 0.38); }
@@ -124,7 +127,6 @@
 
 $primary:                               theme($theme);
 $primary-fixed:                         theme($theme);
-$card:                                  if($colorscheme == 'default', map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-lowest', 'surface-container')), $base);
 $drop_target_color:                     $orange-dark;
 $background:                            if($variant == 'light', background(c), background(e));
 $surface:                               if($variant == 'light', background(a), background(h));
@@ -140,13 +142,15 @@ $base-alt:                              if($variant == 'light', background(b), b
 // Material 3 surface roles (HCT tonal palette, see tools/m3-palette.py). They
 // replace the flat grey ramp so that window < view/card < headerbar < popover
 // are distinct elevations; the Nord and Dracula palettes keep their own greys.
-@if $colorscheme == 'default' {
+@if $m3-tonal {
   $m3: if($variant == 'light', $m3-light, $m3-dark);
   $background:                          map-get($m3, 'surface');
   $surface:                             map-get($m3, if($variant == 'light', 'surface-container-lowest', 'surface-container-high'));
   $base:                                map-get($m3, 'surface-container-lowest');
   $base-alt:                            map-get($m3, if($variant == 'light', 'surface-container-low', 'surface-container'));
 }
+
+$card:                                  if($m3-tonal, map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-lowest', 'surface-container')), $base);
 
 $tooltip:                               if($variant == 'dark', rgba(darken(background(e), 3%), 0.9), rgba(darken(background(h), 3%), 0.9));
 $osd:                                   background(e);
@@ -155,7 +159,7 @@ $scrim-alt:                             background(g);
 $scrim-inverse:                         rgba(white, 0.1);
 $titlebar:                              if($topbar == 'dark', background(g), background(a));
 $titlebar-backdrop:                     if($topbar == 'dark', background(h), background(b));
-@if $colorscheme == 'default' and ($variant == 'dark' or $topbar != 'dark') {
+@if $m3-tonal and ($variant == 'dark' or $topbar != 'dark') {
   $titlebar:                            map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container', 'surface-container-low'));
   $titlebar-backdrop:                   map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-low', 'surface'));
 }
@@ -164,7 +168,7 @@ $keyboard:                              if($variant == 'light', $grey-050, $grey
 $keyboard-alt:                          if($variant == 'light', $grey-300, $grey-900); // for gnome-shell keyboard
 $system:                                if($blackness == 'true', $grey-850, $grey-750); // for gnome-shell keyboard
 $popover:                               if($variant == 'light', background(a), background(e));
-@if $colorscheme == 'default' {
+@if $m3-tonal {
   $popover:                             map-get(if($variant == 'light', $m3-light, $m3-dark), if($variant == 'light', 'surface-container-lowest', 'surface-container-high'));
 }
 
@@ -173,6 +177,14 @@ $panel:                                 if($opacity == 'default', rgba($panel-so
 $shell:                                 if($topbar == 'dark', rgba(black, 0.65), background(c)); // for gnome-shell
 
 $button:                                gtkalpha(currentColor, 0.05);
+$button-text:                           null;
+@if $m3-tonal {
+  // Material 3 "filled tonal" is the default button: secondary-container fill
+  $button:                              map-get(if($variant == 'light', $m3-light, $m3-dark), 'secondary-container');
+  $button-text:                         map-get(if($variant == 'light', $m3-light, $m3-dark), 'on-secondary-container');
+  // Filled text field container
+  $entry:                               map-get(if($variant == 'light', $m3-light, $m3-dark), 'surface-container-highest');
+}
 $entry:                                 gtkalpha(currentColor, 0.05);
 
 //
@@ -185,6 +197,13 @@ $link-visited:                          if($variant == 'light', $purple-dark, $p
 $warning:                               if($variant == 'light', $yellow-dark, $yellow-light);
 $error:                                 if($variant == 'light', $red-dark, $red-light);
 $success:                               if($variant == 'light', $sea-dark, $sea-light);
+
+// Status colours used as *text* (labels, entry text): the fill colours above
+// are too light on light surfaces (e.g. amber at 2:1), so light themes use
+// darker inks that stay above 4.5:1 on window, view and field backgrounds.
+$warning-ink:                           if($m3 and $variant == 'light', #7A5200, $warning);
+$error-ink:                             if($m3 and $variant == 'light', #BA1A1A, $error);
+$success-ink:                           if($m3 and $variant == 'light', #006D3B, $success);
 
 $suggested:                             $primary;
 $destructive:                           $error;
@@ -208,6 +227,22 @@ $overlay-focus-hover:                   gtkalpha(currentColor, 0.16);
 $overlay-active:                        gtkalpha(currentColor, 0.12);
 $overlay-checked:                       gtkalpha(currentColor, 0.10);
 $overlay-selected:                      gtkalpha(currentColor, 0.06);
+
+// Material 3 state layers (md.sys.state): hover .08, focus .10, pressed .10
+@if $m3 {
+  $overlay-focus:                       gtkalpha(currentColor, 0.10);
+  $overlay-focus-hover:                 gtkalpha(currentColor, 0.18);
+  $overlay-active:                      gtkalpha(currentColor, 0.10);
+}
+
+// Navigation (sidebars): M3 active indicator = secondary-container pill
+$nav-active:                            $overlay-checked;
+$nav-active-text:                       $primary;
+@if $m3-tonal {
+  $nav-active:                          $button;
+  $nav-active-text:                     $button-text;
+}
+
 
 //
 // Text and derivative colors

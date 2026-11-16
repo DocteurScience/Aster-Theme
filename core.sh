@@ -98,6 +98,10 @@ install() {
   cp -r "$SRC_DIR/gnome-shell/theme$theme$ctype/more-results${ELSE_DARK:-}.svg"              "$THEME_DIR/gnome-shell/assets/more-results.svg"
   cp -r "$SRC_DIR/gnome-shell/theme$theme$ctype/toggle-on${ELSE_DARK:-}.svg"                 "$THEME_DIR/gnome-shell/assets/toggle-on.svg"
 
+  if [[ "$material" == "true" && "$nord" != "true" && "$dracula" != "true" ]]; then
+    write_m3_toggles "$THEME_DIR/gnome-shell/assets" "$([[ -n "${ELSE_DARK:-}" ]] && echo dark || echo light)"
+  fi
+
   cp -r "$SRC_DIR/gnome-shell/activities/activities${icon}.svg"                              "$THEME_DIR/gnome-shell/assets/activities.svg"
 
   cd "$THEME_DIR/gnome-shell"
@@ -423,8 +427,35 @@ change_radio_color() {
   sed -i "/\$check_radio:/s/default/primary/" $SRC_DIR/_sass/_tweaks-temp.scss
 }
 
+# Material 3 switch artwork for the Shell: 52x32 pill track, 16/24 px handle.
+# $1 = assets dir, $2 = light|dark. Accent is read from the generated toggle-on.svg.
+write_m3_toggles() {
+  local dir="$1" variant="$2" accent track outline on_handle
+  accent=$(grep -oiE '#[0-9a-f]{6}' "$dir/toggle-on.svg" | grep -viE '^#(000000|ffffff|666666|d1d1d1)$' | head -1)
+  if [[ "$variant" == 'dark' ]]; then
+    track='#3A3A3A'; outline='#9E9E9E'; on_handle='#000000'
+  else
+    track='#EBEBEB'; outline='#757575'; on_handle='#FFFFFF'
+  fi
+  cat > "$dir/toggle-off.svg" <<EOF
+<svg xmlns="http://www.w3.org/2000/svg" width="52" height="32" viewBox="0 0 52 32"><rect x="1" y="1" width="50" height="30" rx="15" fill="$track" stroke="$outline" stroke-width="2"/><circle cx="16" cy="16" r="8" fill="$outline"/></svg>
+EOF
+  cat > "$dir/toggle-on.svg" <<EOF
+<svg xmlns="http://www.w3.org/2000/svg" width="52" height="32" viewBox="0 0 52 32"><rect width="52" height="32" rx="16" fill="$accent"/><circle cx="36" cy="16" r="12" fill="$on_handle"/></svg>
+EOF
+  cp "$dir/toggle-off.svg" "$dir/menu-toggle-off.svg"
+}
+
+install_material() {
+  sed -i "/\$material:/s/false/true/" $SRC_DIR/_sass/_tweaks-temp.scss
+}
+
 install_compact_panel() {
   sed -i "/\$panel_style:/s/float/compact/" $SRC_DIR/_sass/_tweaks-temp.scss
+}
+
+install_clear() {
+  sed -i "/\$opacity:/s/default/clear/" $SRC_DIR/_sass/_tweaks-temp.scss
 }
 
 install_solid() {
@@ -512,6 +543,10 @@ theme_tweaks() {
     install_solid
   fi
 
+  if [[ "$opacity" == "clear" ]] ; then
+    install_clear
+  fi
+
   if [[ "$blackness" == "true" ]] ; then
     install_black
   fi
@@ -530,6 +565,10 @@ theme_tweaks() {
 
   if [[ "$submenu" == "true" ]] ; then
     install_submenu
+  fi
+
+  if [[ "$material" == "true" ]] ; then
+    install_material
   fi
 
   if [[ "$nord" == "true" ]] ; then
