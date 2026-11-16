@@ -31,7 +31,7 @@ $slider_color: if($variant == 'light', $primary, white);
 @if $m3 {
   .slider {
     -barlevel-height: 4px;
-    -barlevel-background-color: map-get(if($variant == 'light', $m3-light, $m3-dark), 'secondary-container');
+    -barlevel-background-color: $track;
     -slider-handle-radius: 10px;
     color: $primary;
     &:hover { color: lighten($primary, 5%); }

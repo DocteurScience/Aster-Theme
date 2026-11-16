@@ -30,7 +30,7 @@ $toggle-height: $space-size * 4 + $margin-size + $base-icon-size;
 
 .quick-toggle {
   // Material 3: off tiles sit on surface-container-highest, state layers on top
-  $toggle-off: if($m3, map-get(if($variant == 'light', $m3-light, $m3-dark), 'surface-container-highest'), rgba($text, 0.06));
+  $toggle-off: if($m3-tonal, map-get(if($variant == 'light', $m3-light, $m3-dark), 'surface-container-highest'), rgba($text, 0.06));
   background-color: $toggle-off !important;
 
   &:hover {

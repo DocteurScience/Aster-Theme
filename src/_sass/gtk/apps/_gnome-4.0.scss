@@ -325,7 +325,7 @@
                 color: $primary;
                 background-color: $base;
                 border: none;
-                @if $m3 {
+                @if $m3-tonal {
                   // the PNG tab has Orchis colours baked in: draw the tab with CSS instead
                   // same visible height as the Orchis tab (the PNG is 54px tall with a 36px pill)
                   border-top: 9px solid transparent;
@@ -342,7 +342,7 @@
               }
 
               label {
-                @if $m3 { min-height: 36px; } // 36 + the 2x9px transparent border = 54px row
+                @if $m3-tonal { min-height: 36px; } // 36 + the 2x9px transparent border = 54px row
                 margin-left: $space-size + 4px;
               }
 

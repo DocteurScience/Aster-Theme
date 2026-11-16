@@ -50,5 +50,7 @@ $accent_type: 'default';
 
 // Effective flag (the Material look only exists on the default palette)
 $m3: ($material == 'true' and $colorscheme == 'default');
+// Tonal M3 surfaces/containers: kept off so that Material keeps the Orchis colours (shapes and states only)
+$m3-tonal: false;
 // Darker red so white text reaches 4.5:1 on destructive fills (Material only).
 $red-dark: if($m3, #D32F2F, $red-dark);

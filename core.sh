@@ -433,9 +433,9 @@ write_m3_toggles() {
   local dir="$1" variant="$2" accent track outline on_handle
   accent=$(grep -oiE '#[0-9a-f]{6}' "$dir/toggle-on.svg" | grep -viE '^#(000000|ffffff|666666|d1d1d1)$' | head -1)
   if [[ "$variant" == 'dark' ]]; then
-    track='#33353A'; outline='#8E9099'; on_handle='#000000'
+    track='#3A3A3A'; outline='#9E9E9E'; on_handle='#000000'
   else
-    track='#E2E2E9'; outline='#74777F'; on_handle='#FFFFFF'
+    track='#EBEBEB'; outline='#757575'; on_handle='#FFFFFF'
   fi
   cat > "$dir/toggle-off.svg" <<EOF
 <svg xmlns="http://www.w3.org/2000/svg" width="52" height="32" viewBox="0 0 52 32"><rect x="1" y="1" width="50" height="30" rx="15" fill="$track" stroke="$outline" stroke-width="2"/><circle cx="16" cy="16" r="8" fill="$outline"/></svg>
