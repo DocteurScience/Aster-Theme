@@ -134,7 +134,7 @@
     // M3 disabled: container 12 % of on-surface, content 38 %
     @if $t == disabled {
       box-shadow: none;
-      background-color: color-mix(in srgb, $text 12%, transparent);
+      background-color: gtkalpha($text, 0.12);
       background-image: none;
       color: $text-disabled;
       filter: none;
