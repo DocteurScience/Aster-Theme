@@ -2498,6 +2498,7 @@ scrollbar {
 /**********
  * Switch *
  **********/
+@if $m3 {
 switch {
   // Material 3 switch: 52x32 track, 24 px handle on / 16 px handle off
   transition: all $duration $ease-out;
@@ -2551,7 +2552,51 @@ switch {
     color: $primary-text;
   }
 }
+} @else {
+switch {
+  transition: all $duration $ease-out;
+  margin: $space-size 0;
+  padding: 0 2px;
+  border: 5px solid transparent;
+  border-radius: $circular-radius;
+  background-color: $track;
+  background-clip: padding-box;
+  font-size: 0;
+  color: transparent;
 
+  &:checked { background-color: color-mix(in srgb, $primary 50%, transparent); }
+
+  &:disabled { opacity: 0.5; }
+
+  // hide on/off icons for >=3.24.5
+  image {
+    margin: -8px;
+    color: transparent;
+  }
+
+  > slider {
+    transition: all $duration $ease-out;
+    min-width: 20px;
+    min-height: 20px;
+    margin: -3px -2px;
+    border-radius: $circular-radius;
+    outline: none;
+    box-shadow: 0 0 0 10px transparent, $shadow-z1;
+    background-color: $surface;
+  }
+
+  &:focus > slider { box-shadow: 0 0 0 10px $overlay-focus, $shadow-z1; }
+
+  &:hover > slider { box-shadow: 0 0 0 10px $overlay-hover, $shadow-z1; }
+
+  &:focus:hover > slider { box-shadow: 0 0 0 10px $overlay-focus-hover, $shadow-z1; }
+
+  &:checked > slider {
+    background-color: $primary;
+    color: $primary;
+  }
+}
+}
 
 /*************************
  * Check and Radio items *
@@ -4297,8 +4342,12 @@ separator.sidebar {
       color: $nav-active-text;
 
       &:hover {
-        background-color: $nav-active;
-        background-image: image($overlay-hover);
+        @if $m3 {
+          background-color: $nav-active;
+          background-image: image($overlay-hover);
+        } @else {
+          background-color: $overlay-focus-hover;
+        }
       }
 
       &:focus-visible:focus-within {
@@ -4330,7 +4379,7 @@ placessidebar {
       margin: 0 4px 0 0; // Remove unwanted hard-coded vertical margins with -1px
       padding: $space-size / 2;
       border-radius: $nav-radius;
-      margin: 0 $nav-margin 0 $nav-margin-start;
+      @if $m3 { margin: 0 $nav-margin 0 $nav-margin-start; }
 
       // Using margins/padding directly in the SidebarRow
       // will make the animation of the new bookmark row jump

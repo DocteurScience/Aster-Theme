@@ -22,15 +22,16 @@ OPTIONS:
   -l, --libadwaita        Link installed Aster gtk-4.0 theme to config folder for all libadwaita app use Aster theme
   -f, --fixed             Fixed accent(blue) color for gnome-shell >= 47 libadwaita theme
 
-  --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|(nord/dracula)] (Options can mix)
+  --tweaks                Specify versions for tweaks [solid|compact|black|primary|macos|submenu|material|(nord/dracula)] (Options can mix)
                           1. solid              No transparency panel variant
                           2. compact            No floating panel variant
                           3. black              Full black variant
                           4. primary            Change radio icon checked color to primary theme color (Default is Green)
                           5. macos              Change window buttons to macOS style
                           6. submenu            Set normal submenus color contrast (dark submenu style on dark version)
-                          7. [nord|dracula]     Nord/dracula colorscheme themes (nord and dracula can not mix use!)
-                          8. dock               Fix style for 'dash-to-dock' or 'ubuntu-dock' extension
+                          7. material           Material 3 look (the default look is Orchis)
+                          8. [nord|dracula]     Nord/dracula colorscheme themes (nord and dracula can not mix use!)
+                          9. dock               Fix style for 'dash-to-dock' or 'ubuntu-dock' extension
 
   --round                 Change theme round corner border-radius [Input the px value you want] (Suggested: 2px < value < 16px)
                           1. 3px
@@ -174,6 +175,11 @@ while [[ "$#" -gt 0 ]]; do
           submenu)
             submenu="true"
             echo -e "Install with themed sub-menus ..."
+            shift
+            ;;
+          material)
+            material="true"
+            echo -e "Install Material 3 look (tonal surfaces, pill buttons) ..."
             shift
             ;;
           nord)

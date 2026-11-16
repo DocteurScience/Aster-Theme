@@ -30,15 +30,15 @@ $toggle-height: $space-size * 4 + $margin-size + $base-icon-size;
 
 .quick-toggle {
   // Material 3: off tiles sit on surface-container-highest, state layers on top
-  $toggle-off: if($colorscheme == 'default', map-get(if($variant == 'light', $m3-light, $m3-dark), 'surface-container-highest'), rgba($text, 0.06));
+  $toggle-off: if($m3, map-get(if($variant == 'light', $m3-light, $m3-dark), 'surface-container-highest'), rgba($text, 0.06));
   background-color: $toggle-off !important;
 
   &:hover {
-    background-color: if($colorscheme == 'default', mix($text, $toggle-off, 8%), rgba($text, 0.12)) !important;
+    background-color: if($m3, mix($text, $toggle-off, 8%), rgba($text, 0.12)) !important;
   }
 
   &:active {
-    background-color: if($colorscheme == 'default', mix($text, $toggle-off, 12%), rgba($text, 0.24)) !important;
+    background-color: if($m3, mix($text, $toggle-off, 12%), rgba($text, 0.24)) !important;
   }
 
   &:checked {

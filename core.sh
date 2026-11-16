@@ -423,6 +423,10 @@ change_radio_color() {
   sed -i "/\$check_radio:/s/default/primary/" $SRC_DIR/_sass/_tweaks-temp.scss
 }
 
+install_material() {
+  sed -i "/\$material:/s/false/true/" $SRC_DIR/_sass/_tweaks-temp.scss
+}
+
 install_compact_panel() {
   sed -i "/\$panel_style:/s/float/compact/" $SRC_DIR/_sass/_tweaks-temp.scss
 }
@@ -530,6 +534,10 @@ theme_tweaks() {
 
   if [[ "$submenu" == "true" ]] ; then
     install_submenu
+  fi
+
+  if [[ "$material" == "true" ]] ; then
+    install_material
   fi
 
   if [[ "$nord" == "true" ]] ; then

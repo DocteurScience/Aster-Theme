@@ -47,12 +47,12 @@ $menu-radius: $default_corner / 4 + $space-size + 2px;
 $popup-radius: $default_corner + $space-size * 2 - 4px;
 $menuitem-radius: $default_corner / 4 + 2px;
 $circular-radius: 9999px;
-$button-height: if($compact == 'false', 40px, 36px);
+$button-height: if($m3, if($compact == 'false', 40px, 36px), $medium-size);
 // Navigation rows: full pills inset from both edges (M3) or Orchis half-pills
-$nav-radius: if($colorscheme == 'default', $circular-radius, 0 $circular-radius $circular-radius 0);
-$nav-margin: if($colorscheme == 'default', $space-size * 2, $space-size);
-$nav-margin-start: if($colorscheme == 'default', $space-size * 2, 0);
-$button-radius: if($colorscheme == 'default', $circular-radius, $corner-radius);
+$nav-radius: if($m3, $circular-radius, 0 $circular-radius $circular-radius 0);
+$nav-margin: if($m3, $space-size * 2, $space-size);
+$nav-margin-start: if($m3, $space-size * 2, 0);
+$button-radius: if($m3, $circular-radius, $corner-radius);
 $panel-corner-radius: 0; // For gnome-shell
 
 // font families

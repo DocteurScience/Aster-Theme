@@ -3,6 +3,10 @@
 
 $colorscheme: 'default';
 
+// Material 3 look (tonal surfaces, pill buttons, M3 switch). Off by default:
+// the default look stays the Orchis one. Enabled with --tweaks material.
+$material: 'false';
+
 // Gnome-shell panel style
 $panel_style: 'float';
 
@@ -43,3 +47,8 @@ $gnome_version: 'old';
 
 // Accent type
 $accent_type: 'default';
+
+// Effective flag (the Material look only exists on the default palette)
+$m3: ($material == 'true' and $colorscheme == 'default');
+// Darker red so white text reaches 4.5:1 on destructive fills (Material only).
+$red-dark: if($m3, #D32F2F, $red-dark);
