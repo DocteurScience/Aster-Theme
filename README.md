@@ -96,6 +96,11 @@ sudo flatpak override --filesystem=xdg-config/gtk-3.0
 sudo flatpak override --filesystem=xdg-config/gtk-4.0
 ```
 
+## Extensions
+
+- [Sanket](https://github.com/narkagni/sanket): notification island, compact Quick Settings and calendar are styled with Aster's colours (pinned notifications, toasts, pills).
+- [Blur my Shell](https://github.com/aunetx/blur-my-shell) and Dash to Dock: styles inherited from Orchis.
+
 ## Status
 
 - Tested on GTK 4.24 / libadwaita 1.10, Nautilus 46 and GNOME Shell 46.
