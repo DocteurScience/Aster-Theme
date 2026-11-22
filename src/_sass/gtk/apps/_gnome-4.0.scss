@@ -2328,7 +2328,8 @@ window.background.chromium {
 }
 
 @mixin accent-text {
-  color: if($variant == 'dark', mix($primary, white, 60%), $primary);
+  // fallback: Aster's accent, adjusted to reach 4.5:1 on the tinted pill
+  color: readable-on($primary, mix($primary, $base, 14%), 4.7);
   color: var(--accent-color);
 }
 

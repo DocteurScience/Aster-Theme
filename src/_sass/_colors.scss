@@ -32,6 +32,23 @@
   @return 0.2126 * srgb-linear(red($color)) + 0.7152 * srgb-linear(green($color)) + 0.0722 * srgb-linear(blue($color));
 }
 
+@function contrast-ratio($a, $b) {
+  $la: relative-luminance($a) + 0.05;
+  $lb: relative-luminance($b) + 0.05;
+  @return max($la, $lb) / min($la, $lb);
+}
+
+// Darken (light background) or lighten (dark background) $color until it
+// reaches $target contrast on $bg. Used for accent-coloured text.
+@function readable-on($color, $bg, $target: 4.5) {
+  $i: 0;
+  @while contrast-ratio($color, $bg) < $target and $i < 40 {
+    $color: if(relative-luminance($bg) > 0.18, darken($color, 2%), lighten($color, 2%));
+    $i: $i + 1;
+  }
+  @return $color;
+}
+
 @function on($color, $state: 'primary') {
   // Allow 'light' or 'dark' to $color
   @if ($color == 'light') { $color: white; }
