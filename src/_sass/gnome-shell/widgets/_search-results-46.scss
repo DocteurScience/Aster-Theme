@@ -22,19 +22,18 @@
   }
 }
 
-// content
-// Transparent cards: the overview already darkens the wallpaper while
-// searching, so white text and icons with a drop shadow stay readable.
-$search-shadow: 0 1px 3px rgba(black, 0.75);
+// light shadow so text and icons stand out from bright wallpapers
+$search-shadow: 0 1px 2px rgba(black, 0.5);
 
+// content
 .search-section-content {
-  background-color: transparent;
+  background-color: on(dark, divider);
   border-radius: $material-radius + $space-size * 2;
   border: none;
   box-shadow: none;
   text-shadow: $search-shadow;
   icon-shadow: $search-shadow;
-  color: white;
+  color: on(dark);
   padding: $space-size * 2;
   margin:0 $margin-size * 3;
 }
@@ -42,23 +41,23 @@ $search-shadow: 0 1px 3px rgba(black, 0.75);
 %search-section-content-item {
   border-radius: $material-radius;
   background-color: transparent;
-  color: rgba(white, 0.9);
+  color: on(dark, secondary);
 
   StIcon { icon-shadow: $search-shadow; }
 
   &:focus,
   &:hover,
   &:selected {
-    color: white;
-    background-color: rgba(white, 0.14);
+    color: on(dark);
+    background-color: on(dark, divider);
     transition-duration: 200ms;
     border-radius: $material-radius;
   }
 
   &:active,
   &:checked {
-    color: white;
-    background-color: rgba(white, 0.22);
+    color: on(dark);
+    background-color: on(dark, track);
     border-radius: $material-radius;
   }
 }
@@ -66,7 +65,7 @@ $search-shadow: 0 1px 3px rgba(black, 0.75);
 // "no results" text
 .search-statustext {
   @extend %status_text;
-  color: white;
+  color: on(dark, secondary);
   text-shadow: $search-shadow;
 }
 
@@ -94,7 +93,7 @@ $search-shadow: 0 1px 3px rgba(black, 0.75);
     .list-search-provider-details {
       width: 120px;
       margin-top: 0;
-      color: rgba(white, 0.9);
+      color: on(dark, secondary);
     }
   }
 }
@@ -121,6 +120,6 @@ $search-shadow: 0 1px 3px rgba(black, 0.75);
 
   // list item description
   .list-search-result-description {
-    color: rgba(white, 0.75);
+    color: on(dark, disabled);
   }
 }
