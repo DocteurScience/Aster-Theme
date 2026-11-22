@@ -2310,3 +2310,74 @@ window.background.chromium {
   color: on($primary);
   padding: 32px;
 }
+//
+// Nautilus: selection, path bar and floating bar follow the system accent
+// (GNOME 47+ accent setting through libadwaita's --accent-* variables).
+// The first declaration is a fallback with Aster's accent for GTK < 4.16,
+// which does not understand var() / color-mix() and skips the second one.
+//
+
+@mixin accent-tint($prop, $percent) {
+  #{$prop}: rgba($primary, $percent / 100%);
+  #{$prop}: color-mix(in srgb, var(--accent-bg-color) $percent, transparent);
+}
+
+@mixin accent-ring {
+  box-shadow: inset 0 0 0 2px $primary, 0 1px 3px rgba(black, 0.18);
+  box-shadow: inset 0 0 0 2px var(--accent-bg-color), 0 1px 3px rgba(black, 0.18);
+}
+
+@mixin accent-text {
+  // fallback: Aster's accent, adjusted to reach 4.5:1 on the tinted pill
+  color: readable-on($primary, mix($primary, $base, 14%), 4.7);
+  color: var(--accent-color);
+}
+
+// not applied with --tweaks classic (original Orchis look)
+@if $m3 {
+  // selection in relief: grid view
+  .nautilus-grid-view gridview > child {
+    border-radius: $corner-radius + 2px;
+
+    &:selected {
+      @include accent-tint(background-color, 12%);
+      @include accent-ring;
+
+      &:hover { @include accent-tint(background-color, 18%); }
+    }
+  }
+
+  // list view: rounded rows, same selection
+  .nautilus-list-view columnview > listview > row {
+    border-radius: $corner-radius;
+
+    &:selected {
+      @include accent-tint(background-color, 12%);
+      box-shadow: inset 0 0 0 2px $primary;
+      box-shadow: inset 0 0 0 2px var(--accent-bg-color);
+
+      &:hover { @include accent-tint(background-color, 18%); }
+    }
+  }
+
+  // path bar: the current folder is a tinted pill (the button itself stretches
+  // to the end of the bar, so only its label is tinted)
+  #NautilusPathButton.current-dir label,
+  .nautilus-path-button.current-dir label {
+    @include accent-tint(background-color, 14%);
+    @include accent-text;
+    font-weight: bold;
+    border-radius: $circular-radius;
+    padding: 4px 12px;
+  }
+
+  // "… selected" floating bar
+  .nautilus-window .floating-bar {
+    padding: 2px $space-size * 1.5;
+    background-color: $base;
+    box-shadow: 0 2px 6px rgba(black, 0.18), inset 0 0 0 1px rgba($primary, 0.45);
+    box-shadow: 0 2px 6px rgba(black, 0.18), inset 0 0 0 1px color-mix(in srgb, var(--accent-bg-color) 45%, transparent);
+    @include accent-text;
+    font-weight: bold;
+  }
+}
