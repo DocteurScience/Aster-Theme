@@ -23,13 +23,18 @@
 }
 
 // content
+// Transparent cards: the overview already darkens the wallpaper while
+// searching, so white text and icons with a drop shadow stay readable.
+$search-shadow: 0 1px 3px rgba(black, 0.75);
+
 .search-section-content {
-  background-color: on(dark, divider);
+  background-color: transparent;
   border-radius: $material-radius + $space-size * 2;
   border: none;
   box-shadow: none;
-  text-shadow: none;
-  color: on(dark);
+  text-shadow: $search-shadow;
+  icon-shadow: $search-shadow;
+  color: white;
   padding: $space-size * 2;
   margin:0 $margin-size * 3;
 }
@@ -37,21 +42,23 @@
 %search-section-content-item {
   border-radius: $material-radius;
   background-color: transparent;
-  color: on(dark, secondary);
+  color: rgba(white, 0.9);
+
+  StIcon { icon-shadow: $search-shadow; }
 
   &:focus,
   &:hover,
   &:selected {
-    color: on(dark);
-    background-color: on(dark, divider);
+    color: white;
+    background-color: rgba(white, 0.14);
     transition-duration: 200ms;
     border-radius: $material-radius;
   }
 
   &:active,
   &:checked {
-    color: on(dark);
-    background-color: on(dark, track);
+    color: white;
+    background-color: rgba(white, 0.22);
     border-radius: $material-radius;
   }
 }
@@ -59,7 +66,8 @@
 // "no results" text
 .search-statustext {
   @extend %status_text;
-  color: on(dark, secondary);
+  color: white;
+  text-shadow: $search-shadow;
 }
 
 .grid-search-results {
@@ -86,7 +94,7 @@
     .list-search-provider-details {
       width: 120px;
       margin-top: 0;
-      color: on(dark, secondary);
+      color: rgba(white, 0.9);
     }
   }
 }
@@ -113,6 +121,6 @@
 
   // list item description
   .list-search-result-description {
-    color: on(dark, disabled);
+    color: rgba(white, 0.75);
   }
 }
